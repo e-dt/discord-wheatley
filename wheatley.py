@@ -41,7 +41,7 @@ class Wheatley:
 
     async def download_messages(self, channel, limit, is_all, current_count, last_msg, msg_handle):
         before = None
-        dwnld_limit = 100
+        dwnld_limit = 1000
 
         if last_msg is not None:
             before = last_msg
@@ -61,7 +61,7 @@ class Wheatley:
 
         await self.bot.edit_message(msg_handle, 'Downloaded ' + str(current_count) + ' messages.')
         current_count += batch_size
-        if batch_size < 100:
+        if batch_size < 1000:
             await self.bot.edit_message(msg_handle, 'Finished downloading messages.')
             return current_count
         else:
