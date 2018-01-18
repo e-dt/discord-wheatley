@@ -39,7 +39,7 @@ class Wheatley:
             alt = not alt
         file_handle.close()
 
-    async def download_messages(self, channel, limit, is_all, current_count, last_msg, msg_handle):
+    async def download_messages(self, channel, limit, is_all, current_count, last_msg, msg_handle, downloaded = 0):
         before = None
         dwnld_limit = 100
 
@@ -58,14 +58,15 @@ class Wheatley:
             msg_set.append(message)
 
         self.write_to_yaml(msg_set)
-
-        await self.bot.edit_message(msg_handle, 'Downloaded ' + str(current_count) + ' messages.')
+        if downloaded == 1000:
+            await self.bot.edit_message(msg_handle, 'Downloaded ' + str(current_count) + ' messages.')
+            downloaded = 0
         current_count += batch_size
         if batch_size < 100:
             await self.bot.edit_message(msg_handle, 'Finished downloading messages.')
             return current_count
         else:
-            return current_count + await self.download_messages(channel, limit, is_all, current_count, last_msg, msg_handle)
+            return current_count + await self.download_messages(channel, limit, is_all, current_count, last_msg, msg_handle, downloaded + 100)
 
     @commands.command(pass_context=True, no_pm=True)
     async def dwnld(self, ctx, limit: str, channel: discord.Channel):
